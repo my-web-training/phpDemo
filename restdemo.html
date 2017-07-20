@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta name="viewport" content="width=device-width" />
+    <title>测试Web Api - Jquery调用</title>
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend>
+                测试Web Api
+            </legend>
+            <a href="javascript:add()">添加(post)</a>
+            <a href="javascript:update(1)">更新(put)</a>
+            <a href="javascript:deletes(1)">删除(delete)</a>
+            <a href="javascript:getall()">列表(Get)</a>
+            <a href="javascript:getone()">实体(Get)</a>
+        </fieldset>
+        <table id="users">
+            <thead>
+                <tr><th>ID</th><th>Name</th></tr>
+            </thead>
+            <tbody id="looptr"></tbody>
+        </table>
+        <script type="text/javascript">
+
+            $(function () {
+                getall();
+            });
+
+            //获取列表
+            function getall() {
+                var str = "";
+                $.getJSON("http://localhost:13242/api/users", function (users) {
+                    alert(JSON.stringify(users));
+                    $.each(users, function (index, user) {
+                        str += "<tr>"
+                        str += "<td>" + users[index].id + "</td>";
+                        str += "<td>" + users[index].name + "</td>";
+                        str += "<tr>"
+                    });
+                    $("#looptr").html(str);
+                });
+            }
+
+            //获取某条信息
+            function getone() {
+                var str = "";
+                $.getJSON("http://localhost:13242/api/users/1", function (user) {
+                    alert(JSON.stringify(user));
+                    str += "<tr>"
+                    str += "<td>" + user.id + "</td>";
+                    str += "<td>" + user.name + "</td>";
+                    str += "<tr>"
+                    $("#looptr").html(str);
+                });
+            }
+
+            //新增
+            function add() {
+                $.ajax({
+                    url: "http://localhost:13242/api/users/",
+                    type: "POST",
+                    data: { "Id": 5, "Name": "test" },
+                    success: function (data) { alert(JSON.stringify(data)); }
+                });
+            }
+
+            //更新            
+            function update(id) {
+                $.ajax({
+                    url: "http://localhost:13242/api/users?id=5",
+                    type: "PUT",
+                    data: { "Id": 5, "Name": "moditest" },
+                    success: function (data) { alert(JSON.stringify(data)); }
+                });
+            }
+
+            //删除
+            function deletes(id) {
+                $.ajax({
+                    url: "http://localhost:13242/api/users/5",
+                    type: "DELETE",
+                    success: function (data) { alert(data); }
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>
